@@ -1,7 +1,6 @@
 
 package persistencia;
 
-import java.lang.reflect.Type;
 import java.util.List;
 import servico.Repositorio;
 import servico.SimilarToPersistence;
