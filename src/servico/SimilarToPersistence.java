@@ -4,6 +4,7 @@ package servico;
 import anotacoes.Coluna;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -181,7 +182,7 @@ public class SimilarToPersistence extends PassConnection {
         return Arrays.asList(listRetorno);
     }
     
-    public List<List<Object>> junction(String sql) {
+    public List<Object> junction(String sql) {
         List<Object> listRetorno = new LinkedList<>();
         try {
             if(oConn!=null) {
@@ -192,11 +193,16 @@ public class SimilarToPersistence extends PassConnection {
                     oStm = oConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
                     oSet = oStm.executeQuery(sql);
                     oConn.commit();
-
+                    ResultSetMetaData rsmd = oSet.getMetaData();
+                    Object dados;
                     while(oSet.next()) {
-                        
-                        listRetorno.add(oSet.getObject(1));
-                        
+                        int qtdColumn = 0;
+                        while(rsmd.getColumnCount() > qtdColumn) {
+                            dados = oSet.getObject(qtdColumn + 1);
+                            listRetorno.add(dados);
+                            qtdColumn++;
+                        }
+                        listRetorno.add("\n");
                     }
                 }catch(SQLException ex) {
                     try {
@@ -211,7 +217,6 @@ public class SimilarToPersistence extends PassConnection {
         }catch(SQLException ex) {
             Logger.getLogger(InfoBanco.class.getName()).log(Level.SEVERE, "consultar", ex);
         }
-        return Arrays.asList(listRetorno);
+        return listRetorno;
     }
-    
 }

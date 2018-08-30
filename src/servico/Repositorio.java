@@ -3,7 +3,6 @@ package servico;
 import anotacoes.Coluna;
 import anotacoes.Entidade;
 import anotacoes.Junction;
-import entidade.Aparelho;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedList;
