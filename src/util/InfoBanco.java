@@ -23,7 +23,7 @@ public class InfoBanco implements InfoBancoService {
     
     private String nameSchema;
     private String pk = "";
-    private final String NOMEDRIVER = DriverNameBanco.getDriverName();
+    private final String DRIVERNAME = DriverNameBanco.getDriverName();
 
     @Override
     public List<String> getColumnsTabela(String schema, String tabela) {
@@ -60,7 +60,7 @@ public class InfoBanco implements InfoBancoService {
                 if(oConn!=null) {
                     DatabaseMetaData metadata = oConn.getMetaData();
                     ResultSet resultSet = metadata.getColumns(oConn.getCatalog(), schema, tabela, null);
-                    if(NOMEDRIVER.contains("PostgreSQL") && Postgres.getInstancia().getIsAutoIncremento()) {
+                    if(DRIVERNAME.contains("PostgreSQL") && Postgres.getInstancia().getIsAutoIncremento()) {
                         pk = getPrimaryKey(schema, tabela);
                     }
                     while (resultSet.next()) {
@@ -126,7 +126,7 @@ public class InfoBanco implements InfoBancoService {
                 if(oConn!=null) {
                     DatabaseMetaData metadata = oConn.getMetaData();
                     oSet = metadata.getPrimaryKeys(oConn.getCatalog(), schema, tabela);
-                    if(NOMEDRIVER.contains("MariaDB")) {
+                    if(DRIVERNAME.contains("MariaDB")) {
                         pk = MariaDB.getInstancia().getColumnPrimeyKey(tabela);
                     } else {
                         while(oSet.next()) {
@@ -192,9 +192,9 @@ public class InfoBanco implements InfoBancoService {
     
     public Long getIdSequenceTable(String schema, String tabela) {
         if (!getPrimaryKey(schema, tabela).isEmpty()) {
-            if (NOMEDRIVER.contains("PostgreSQL")) {
+            if (DRIVERNAME.contains("PostgreSQL")) {
                 return Postgres.getInstancia().getSequence(schema, tabela, pk);
-            } else if (NOMEDRIVER.contains("MariaDB")) {
+            } else if (DRIVERNAME.contains("MariaDB")) {
                 return MariaDB.getInstancia().getSequence(tabela, schema);
             }
             
@@ -211,5 +211,13 @@ public class InfoBanco implements InfoBancoService {
     public void setNameSchema(String nameSchema) {
         this.nameSchema = nameSchema;
     }
-
+    
+    public String getTableNameForeign(String tableName) {
+        if(DRIVERNAME.contains("PostgreSQL")) {
+            return Postgres.getInstancia().getNameTabelForeign(tableName);
+        } else if (DRIVERNAME.contains("MariaDB")) {
+            return MariaDB.getInstancia().getNameTabelForeign(tableName);
+        }
+        return null;
+    }
 }

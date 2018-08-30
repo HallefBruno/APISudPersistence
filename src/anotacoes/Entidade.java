@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Entidade {
-    public String nomeTabela() default "";
+    public String name() default "";
     public String tabelaSchema() default "";
 }

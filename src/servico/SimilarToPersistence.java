@@ -110,7 +110,7 @@ public class SimilarToPersistence extends PassConnection {
                     f.setAccessible(true);
                     Coluna col = f.getAnnotation(Coluna.class);
                     if(col!=null) {
-                        nomesAtributos.add(!col.nomeColuna().equals("") ? col.nomeColuna() : f.getName());
+                        nomesAtributos.add(!col.name().equals("") ? col.name() : f.getName());
                     } else {
                         nomesAtributos.add(f.getName());
                     }
@@ -154,7 +154,7 @@ public class SimilarToPersistence extends PassConnection {
                         f.setAccessible(true);
                         Coluna col = f.getAnnotation(Coluna.class);
                         if(col!=null) {
-                            nomesAtributos.add(!col.nomeColuna().equals("") ? col.nomeColuna() : f.getName());
+                            nomesAtributos.add(!col.name().equals("") ? col.name() : f.getName());
                         } else {
                             nomesAtributos.add(f.getName());
                         }
@@ -164,6 +164,39 @@ public class SimilarToPersistence extends PassConnection {
                         for(int i=0; i<nomesAtributos.size(); i++) {
                             listRetorno.add(oSet.getObject(nomesAtributos.get(i)));
                         }
+                    }
+                }catch(SQLException ex) {
+                    try {
+                        oConn.rollback();
+                    } catch (SQLException e) {
+                        Logger.getLogger(InfoBanco.class.getName()).log(Level.SEVERE, "consultar", e);
+                    }
+                    Logger.getLogger(InfoBanco.class.getName()).log(Level.SEVERE, "consultar", ex);
+                }
+            }
+            oConn.setAutoCommit(true);
+        }catch(SQLException ex) {
+            Logger.getLogger(InfoBanco.class.getName()).log(Level.SEVERE, "consultar", ex);
+        }
+        return Arrays.asList(listRetorno);
+    }
+    
+    public List<List<Object>> junction(String sql) {
+        List<Object> listRetorno = new LinkedList<>();
+        try {
+            if(oConn!=null) {
+                oStm = null;
+                oSet = null;
+                try {
+                    oConn.setAutoCommit(false);
+                    oStm = oConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+                    oSet = oStm.executeQuery(sql);
+                    oConn.commit();
+
+                    while(oSet.next()) {
+                        
+                        listRetorno.add(oSet.getObject(1));
+                        
                     }
                 }catch(SQLException ex) {
                     try {

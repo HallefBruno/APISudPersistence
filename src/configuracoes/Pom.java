@@ -8,7 +8,7 @@ package configuracoes;
 public enum Pom {
     
     SQLMSG("true"),
-    URL("jdbc:mariadb://localhost:3306/frame"),//jdbc:mariadb://localhost:3306/db
+    URL("jdbc:mariadb://localhost:3306/frame"),//jdbc:mariadb://localhost:3306/db   //jdbc:postgresql://localhost:5434/frame
     USER("root"),
     PASSWORD("5432");
     

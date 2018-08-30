@@ -5,6 +5,8 @@ import configuracoes.Pom;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import util.Excecao;
 
 /**
@@ -20,12 +22,15 @@ public class BankOperation {
         try {
             //Print msg sql
             Repositorio.sqlMensagem = Boolean.valueOf(Pom.SQLMSG.getValue());
+            Class.forName("org.postgresql.Driver");//org.mariadb.jdbc.Driver
             oConn = DriverManager.getConnection(Pom.URL.getValue(),Pom.USER.getValue(),Pom.PASSWORD.getValue());
             if (oConn != null) {
                 return oConn;
             }
         } catch (SQLException ex) {
             throw new Excecao(BankOperation.class, "getConectionFactory", ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(BankOperation.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }

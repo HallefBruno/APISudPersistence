@@ -44,4 +44,11 @@ public class Persistencia {
         }
         return null;
     }
+    
+    public List<List<Object>> junction(Object oEntidade) {
+        if(oRepositorio.juction(oEntidade)) {
+            return oSimilarToPersistence.junction(oRepositorio.retornaSql());
+        }
+        return null;
+    }
 }

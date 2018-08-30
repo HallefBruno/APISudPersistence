@@ -46,6 +46,20 @@ public class MariaDB {
         throw new Excecao(MariaDB.class, "getColumnPrimeyKey", null);
     }
     
+    public String getNameTabelForeign(String tableName) {
+        StringBuilder sql = new StringBuilder();
+        String nomeColumn;
+        sql.append("SELECT CONSTRAINT_SCHEMA,REFERENCED_TABLE_NAME,COLUMN_NAME ")
+           .append("FROM information_schema.KEY_COLUMN_USAGE ")
+           .append("WHERE TABLE_NAME = '").append(tableName).append("' ")
+           .append("AND CONSTRAINT_NAME <> 'PRIMARY' ");
+        nomeColumn = ExecutorSQL.executaSqlRetorna(sql.toString(), "CONSTRAINT_SCHEMA,REFERENCED_TABLE_NAME,COLUMN_NAME");
+        if(nomeColumn!=null) {
+            return nomeColumn;
+        }
+        throw new Excecao(MariaDB.class, "getNameTabelForeign", null);
+    }
+    
     public static Long getSequeValueMariaDB() {
     	return valorSeq;
     }
