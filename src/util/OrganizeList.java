@@ -9,7 +9,7 @@ import servico.SimilarToPersistence;
  *
  * @author hallef.sud
  */
-public class OrganizeList {//col[column].trim()+","+col[column].trim()+","+col[column].trim()+","+col[column].trim()+","+col[column].trim()+","+col[column].trim()
+public class OrganizeList {
     
     public static String asList(List<Object> junction) {
         
@@ -27,6 +27,3 @@ public class OrganizeList {//col[column].trim()+","+col[column].trim()+","+col[c
         return add.toString();
     }
 }
-//for(int column=0; column<SimilarToPersistence.qtdColumn; column++) {
-//    System.out.println(col[0].trim()+","+col[1].trim()+","+col[2].trim()+","+col[3].trim()+","+col[4].trim()+","+col[5].trim());
-//}
