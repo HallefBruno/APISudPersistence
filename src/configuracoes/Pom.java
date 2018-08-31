@@ -7,9 +7,9 @@ package configuracoes;
  */
 public enum Pom {
     
-    SQLMSG("true"),
-    URL("jdbc:mariadb://localhost:3306/frame"),//jdbc:mariadb://localhost:3306/db   //jdbc:postgresql://localhost:5434/frame
-    USER("root"),
+    SQLMSG("true"),//jdbc:mariadb://localhost:3306/frame
+    URL("jdbc:postgresql://localhost:5434/frame"),//jdbc:mariadb://localhost:3306/db   //jdbc:postgresql://localhost:5434/frame
+    USER("postgres"),
     PASSWORD("5432");
     
     private final String VALUE;
