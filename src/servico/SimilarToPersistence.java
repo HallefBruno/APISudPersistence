@@ -20,7 +20,10 @@ import util.InfoBanco;
  * @author hallef.sud
  */
 public class SimilarToPersistence extends PassConnection {
- 
+    
+    public static int qtdColumn = 0;
+    public static int qtdRow = 0;
+    
     public void salvar(String sql) {
         try {
             if (oConn != null) {
@@ -195,14 +198,16 @@ public class SimilarToPersistence extends PassConnection {
                     oConn.commit();
                     ResultSetMetaData rsmd = oSet.getMetaData();
                     Object dados;
+                    int count = 0;
                     while(oSet.next()) {
-                        int qtdColumn = 0;
-                        while(rsmd.getColumnCount() > qtdColumn) {
-                            dados = oSet.getObject(qtdColumn + 1);
+                        while(rsmd.getColumnCount() > count) {
+                            dados = oSet.getObject(count + 1);
                             listRetorno.add(dados);
+                            count++;
                             qtdColumn++;
                         }
-                        listRetorno.add("\n");
+                        count = 0;
+                        qtdRow++;
                     }
                 }catch(SQLException ex) {
                     try {
