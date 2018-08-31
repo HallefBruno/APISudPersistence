@@ -25,6 +25,21 @@ public class InfoBanco implements InfoBancoService {
     private String pk = "";
     private final String DRIVERNAME = DriverNameBanco.getDriverName();
 
+    private static InfoBanco oInfoBanco;
+
+    public static InfoBanco getInstancia() {
+        if (oInfoBanco == null) {
+            oInfoBanco = new InfoBanco();
+        }
+        return oInfoBanco;
+    }
+    
+    /**
+     *
+     * @param schema
+     * @param tabela
+     * @return lista
+     */
     @Override
     public List<String> getColumnsTabela(String schema, String tabela) {
         List<String> lista = new LinkedList<>();

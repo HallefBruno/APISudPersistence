@@ -79,10 +79,6 @@ public class Postgres {
         //No executor de sql, eu passo as colunas de retorno
         return ExecutorSQL.executaSqlRetorna(sql.toString(), "table_schema,foreign_table_name,column_name_fk");//foreign_table_name,column_name_fk,table_schema
     }
-    
-    public static void main(String[] args) {
-        System.out.println(new Postgres().getNameTabelForeign("telefone"));
-    }
 }
 
 

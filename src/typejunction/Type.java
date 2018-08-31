@@ -7,5 +7,5 @@ package typejunction;
  */
 public enum Type {
     JOIN,
-    LEFT;
+    LEFT_JOIN;
 }

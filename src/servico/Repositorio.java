@@ -14,16 +14,15 @@ import util.InfoBanco;
  *
  * @author hallef.sud
  */
-public class Repositorio {
+public class Repositorio extends InfoBanco {
 
-    private final InfoBanco oEInfoBanco = new InfoBanco();
     private List<String> listaDeFielsAnotados = new LinkedList<>();
     private List<String> listaDeColunasDaTabelaEntidade = new LinkedList<>();
     private List<Object> listaDevaloresAtributos = new LinkedList<>();
     private final List<Object> listaDevaloresAtributosConsulta = new LinkedList<>();
     private String retornSql = "";
-    private String nomeDoSchema = "public";
-    private String nomeDaEntidade = "telefone";
+    private String nomeDoSchema = "";
+    private String nomeDaEntidade = "";
     public static boolean sqlMensagem;
 
     private String getNomeEntidade(Object oEntidade) {
@@ -53,8 +52,8 @@ public class Repositorio {
         Entidade anotationEntidade = entidadeAnotada.getAnnotation(Entidade.class);
         nomeDoSchema = "";
         if (getNomeDaEntidade() != null && !getNomeDaEntidade().isEmpty()) {
-            boolean possuiSchema = oEInfoBanco.validaSchema(anotationEntidade.tabelaSchema(), getNomeDaEntidade());
-            String nomeSchema = oEInfoBanco.getNameSchema();
+            boolean possuiSchema = InfoBanco.getInstancia().validaSchema(anotationEntidade.tabelaSchema(), getNomeDaEntidade());
+            String nomeSchema = InfoBanco.getInstancia().getNameSchema();
             if (possuiSchema) {
                 nomeDoSchema = anotationEntidade.tabelaSchema().isEmpty() ? nomeSchema : anotationEntidade.tabelaSchema();
                 return nomeDoSchema;
@@ -66,7 +65,7 @@ public class Repositorio {
     }
 
     //Uso este metodo para retornar o nome do schema
-    //para nao realizar conexoes quando o metodo oEInfoBanco.validaSchema
+    //para nao realizar conexoes quando o metodo InfoBanco..validaSchema
     //receber uma msg.
     private String getNomeDoSchema() {
         return nomeDoSchema;
@@ -93,7 +92,7 @@ public class Repositorio {
                         if (field.get(oEntidade).toString().contains("@")) {
                             nomeEntidade = getNomeEntidade(field.get(oEntidade));
                             nomeSchema = getSchemaEntidade(field.get(oEntidade));
-                            idSeq = oEInfoBanco.getIdSequenceTable(nomeSchema, nomeEntidade);
+                            idSeq = InfoBanco.getInstancia().getIdSequenceTable(nomeSchema, nomeEntidade);
                             nomeDaEntidade = getNomeEntidade(oEntidade);
                             nomeDoSchema = getSchemaEntidade(oEntidade);
                             listaDevaloresAtributos.add(idSeq);
@@ -128,7 +127,7 @@ public class Repositorio {
 
     private boolean compararListaDeAtributosComListaColunas(Object oEntidade) {
         listaDeFielsAnotados = varrerFildsColuna(oEntidade);
-        listaDeColunasDaTabelaEntidade = oEInfoBanco.getColumns(getNomeDoSchema(), getNomeDaEntidade());
+        listaDeColunasDaTabelaEntidade = InfoBanco.getInstancia().getColumns(getNomeDoSchema(), getNomeDaEntidade());
         int qtdEntrouNoIf = 0;
         if (listaDeFielsAnotados.size() == listaDeColunasDaTabelaEntidade.size()) {
             for (int i = 0; i < listaDeFielsAnotados.size(); i++) {
@@ -181,7 +180,7 @@ public class Repositorio {
         }
 
         sql.append("UPDATE ").append(getNomeDoSchema()).append(".").append(getNomeDaEntidade()).append(" SET ").append(tb.substring(0, tb.length() - 1))
-           .append(" WHERE ").append(oEInfoBanco.getPrimaryKey(getNomeDoSchema(), getNomeDaEntidade())).append(" = ").append(id);
+           .append(" WHERE ").append(InfoBanco.getInstancia().getPrimaryKey(getNomeDoSchema(), getNomeDaEntidade())).append(" = ").append(id);
 
         retornSql = sql.toString();
 
@@ -197,7 +196,7 @@ public class Repositorio {
         retornSql = "";
         StringBuilder sql = new StringBuilder();
         sql.append("DELETE FROM ").append(getNomeDoSchema()).append(".").append(getNomeDaEntidade())
-           .append(" WHERE ").append(oEInfoBanco.getPrimaryKey(getNomeDoSchema(), getNomeDaEntidade())).append(" = ").append(id);
+           .append(" WHERE ").append(InfoBanco.getInstancia().getPrimaryKey(getNomeDoSchema(), getNomeDaEntidade())).append(" = ").append(id);
         
         retornSql = sql.toString();
 
@@ -213,7 +212,7 @@ public class Repositorio {
         StringBuilder tb = new StringBuilder();
         retornSql = "";
         StringBuilder sql = new StringBuilder();
-        listaDeColunasDaTabelaEntidade = oEInfoBanco.getColumnsAll(getNomeDoSchema(), getNomeDaEntidade());
+        listaDeColunasDaTabelaEntidade = InfoBanco.getInstancia().getColumnsAll(getNomeDoSchema(), getNomeDaEntidade());
         for (int i = 0; i < listaDevaloresAtributosConsulta.size(); i++) {
             tb = tb.append(listaDeColunasDaTabelaEntidade.get(i)).append("=").append("'").append(listaDevaloresAtributosConsulta.get(i)).append("'").append(" OR ");
         }
@@ -231,29 +230,29 @@ public class Repositorio {
     //Montando o sql de juncao
     private String sqlJunction(Object oEntidade) {
         StringBuilder tb = new StringBuilder();
-        String tbfk = oEInfoBanco.getTableNameForeign(getNomeDaEntidade());
+        String tbfk = InfoBanco.getInstancia().getTableNameForeign(getNomeDaEntidade());
         String coltbfk[] = tbfk.split(",");
         StringBuilder sql = new StringBuilder();
         retornSql = "";
         
         //tabela atual
-        listaDeColunasDaTabelaEntidade = oEInfoBanco.getColumnsAll(getNomeDoSchema(), getNomeDaEntidade());
+        listaDeColunasDaTabelaEntidade = InfoBanco.getInstancia().getColumnsAll(getNomeDoSchema(), getNomeDaEntidade());
         for (int i = 0; i < listaDeColunasDaTabelaEntidade.size(); i++) {
             tb = tb.append(getNomeDaEntidade()).append(".").append(listaDeColunasDaTabelaEntidade.get(i)).append(",");
         }
         
         //tabela estrangeira
-        listaDeColunasDaTabelaEntidade = oEInfoBanco.getColumnsAll(coltbfk[0].trim(), coltbfk[1].trim());
+        listaDeColunasDaTabelaEntidade = InfoBanco.getInstancia().getColumnsAll(coltbfk[0].trim(), coltbfk[1].trim());
         for (int i = 0; i < listaDeColunasDaTabelaEntidade.size(); i++) {
             tb = tb.append(coltbfk[1]).append(".").append(listaDeColunasDaTabelaEntidade.get(i)).append(",");
         }
         
         sql.append("SELECT ").append(tb.toString().substring(0, tb.length() - 1))
-           .append("\nFROM ").append(getNomeDaEntidade()).append("\n").append(getJunction(oEntidade))
+           .append("\nFROM ").append(getNomeDaEntidade()).append("\n").append(getJunction(oEntidade).replace("_", " "))
            .append(" ").append(coltbfk[1])
            .append(" ON ").append(getNomeDaEntidade()).append(".").append(coltbfk[2])
            .append(" = ").append(coltbfk[1]).append(".")
-           .append(oEInfoBanco.getPrimaryKey(coltbfk[0].trim(),coltbfk[1].trim()));
+           .append(InfoBanco.getInstancia().getPrimaryKey(coltbfk[0].trim(),coltbfk[1].trim()));
 
         retornSql = sql.toString();
         if(sqlMensagem)

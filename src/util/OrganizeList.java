@@ -2,7 +2,6 @@
 package util;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 import servico.SimilarToPersistence;
 
